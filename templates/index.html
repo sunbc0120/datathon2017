@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Dashboard</title>
+  <link rel="stylesheet" href="./static/lib/css//bootstrap.min.css">
+  <link rel="stylesheet" href="./static/lib/css/keen-dashboards.css">
+  <link rel="stylesheet" href="./static/lib/css/dc.css">
+  <link rel="stylesheet" href="./static/css/custom.css">
+
+
+</head>
+<body class="application">
+
+  <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+    <div class="container-fluid">
+      <div class="navbar-header">
+        <a class="navbar-brand" href="./">Donorschoose Dashboard</a>
+      </div>
+    </div>
+  </div>
+
+  <div class="container-fluid">
+
+    <div class="row">
+
+      <div class="col-sm-6">
+        <div class="row">
+
+          <!-- Time Chart --> 
+          <div class="col-sm-12">
+            <div class="chart-wrapper">
+              <div class="chart-title">
+                Number of ICU
+              </div>
+              <div class="chart-stage">
+                <div id="time-chart"></div>
+              </div>
+            </div>
+          </div>
+          <!-- Time Chart --> 
+
+          <!-- Hospital Pie -->
+          <div class="col-sm-12">
+            <div class="chart-wrapper">
+              <div class="chart-title">
+                Hosptial Type
+              </div>
+              <div class="chart-stage">
+                <div id="hospital-type-row-chart"></div>
+              </div>
+            </div>
+          </div>
+          <!-- Hospital Pie -->
+
+          <!-- ICU SRC Pie -->
+          <div class="col-sm-6">
+            <div class="chart-wrapper">
+              <div class="chart-title">
+                ICU SRC Type
+              </div>
+              <div class="chart-stage">
+                <div id="icu-src-type-row-chart"></div>
+              </div>
+            </div>
+          </div>
+          <!-- ICU SRC Pie -->
+
+          <!-- ICU OUT Pie -->
+          <div class="col-sm-6">
+            <div class="chart-wrapper">
+              <div class="chart-title">
+                ICU Outcome
+              </div>
+              <div class="chart-stage">
+                <div id="icu-out-level-row-chart"></div>
+              </div>
+            </div>
+          </div>
+          <!-- ICU OUT Pie -->
+
+        </div>
+      
+
+      </div>
+
+      <!-- Map -->  
+       <div class="col-sm-3">
+        <div class="chart-wrapper">
+          <div class="chart-title">
+            Gender
+          </div>
+          <div class="chart-stage">
+            <div id="gender-chart"></div>
+          </div>
+        </div>
+      </div>
+       <!-- Map -->
+
+      <!-- Map -->  
+       <div class="col-sm-3">
+        <div class="chart-wrapper">
+          <div class="chart-title">
+            Survival
+          </div>
+          <div class="chart-stage">
+            <div id="survive-chart"></div>
+          </div>
+        </div>
+      </div>
+       <!-- Map -->
+
+      <!-- Metric 1 -->
+      <div class="col-sm-3">
+        <div class="chart-wrapper">
+          <div class="chart-title">
+            Average ICU Hours
+          </div>
+          <div class="chart-stage">
+            <div id="icu-hrs-projects-nd"></div>
+          </div>
+        </div>
+      </div>
+      <!-- Metric 1 -->
+
+      <!-- Metric 2 -->
+      <div class="col-sm-3">
+        <div class="chart-wrapper">
+          <div class="chart-title">
+            Maximum ICU Hours
+          </div>
+          <div class="chart-stage">
+            <div id="icu-hrs-max-nd"></div>
+          </div>
+        </div>
+      </div>
+      <!-- Metric 2 -->
+
+
+      <!-- Metric 3 -->
+      <div class="col-sm-3">
+        <div class="chart-wrapper">
+          <div class="chart-title">
+            Average Age
+          </div>
+          <div class="chart-stage">
+            <div id="age-avg-projects-nd"></div>
+          </div>
+        </div>
+      </div>
+      <!-- Metric 3 -->
+
+      <!-- Metric 4 -->
+      <div class="col-sm-3">
+        <div class="chart-wrapper">
+          <div class="chart-title">
+            Maximum Age
+          </div>
+          <div class="chart-stage">
+            <div id="age-max-projects-nd"></div>
+          </div>
+        </div>
+      </div>
+      <!-- Metric 4 -->
+
+    </div>
+
+  </div>
+
+    <hr>
+    <p class="small text-muted">Built with &#9829; by <a href="https://keen.io">Keen IO</a></p>
+
+  </div>
+
+  <script src="./static/lib/js/jquery.min.js"></script>
+  <script src="./static/lib/js/bootstrap.min.js"></script>
+  <script src="./static/lib/js/crossfilter.js"></script>
+  <script src="./static/lib/js/d3.js"></script>
+  <script src="./static/lib/js/dc.js"></script>
+  <script src="./static/lib/js/queue.js"></script>
+
+
+  <script src="./static/lib/js/keen.min.js"></script>
+  <script src='./static/js/graphs.js' type='text/javascript'></script>
+</body>
+</html>
