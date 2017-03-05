@@ -7,16 +7,10 @@ function makeGraphs(error, projectsJson) {
 	
 	//Clean projectsJson data
 	var icuProjects = projectsJson;
-	console.log('icuProjects is:  >>>>>> ',projectsJson);
-
-	// var dateFormat = d3.time.format("%Y%m");
 	var dateFormat = d3.time.format("%Y-%m-%d %H:%M:%S.%L")
 	icuProjects.forEach(function(d) {
-		// console.log('input date: ', d["hosp_ad_dtm"]);
 		d["icu_ds_dtm"] = dateFormat.parse(d["icu_ds_dtm"]);
-		// console.log('parse date: ', d["hosp_ad_dtm"]);
 		d["icu_ds_dtm"].setDate(1);
-		// d["total_icu"] = +d["total_icu"];
 		
 		if (d["icu_srce"] == 1) {
 			d["icu_srce"] = "OT/Recovery";
@@ -45,13 +39,16 @@ function makeGraphs(error, projectsJson) {
 			d["icu_outcm"] = "Other"
 		};
 
-		// console.log('check this out of date: ', d["total_icu"]);
+		if (d["died_icu"] == 1) {
+			d["died_icu"] = "Died"
+		} else {
+			d["died_icu"] = "Survival"
+		}
+
 	});
 
 	//Create a Crossfilter instance
 	var ndx = crossfilter(icuProjects);
-
-	console.log('ndx is:  >>>>>> ',ndx);
 
 	//Define Dimensions
 	var dateDim = ndx.dimension(function(d) { return d["icu_ds_dtm"]; });
@@ -87,15 +84,15 @@ function makeGraphs(error, projectsJson) {
 
 	var numProjectsByDie = diedDim.group();
 
-	// var totalDonationsByState = stateDim.group().reduceSum(function(d) {
-	// 	return d["total_donations"];
-	// });
+	var totalhorsICU = ndx.groupAll().reduceSum(function(d) {
+		return d["icu_hrs"];
+	});
 
 	var all = ndx.groupAll();
 	// var totalDonations = ndx.groupAll().reduceSum(function(d) {return d["total_donations"];});
 
-	// var max_state = totalDonationsByState.top(1)[0].value;
-
+	// var max_hr = totalhorsICU.top(1)[0].value;
+	var maxhr = numProjectsByAge.top(1)[0]
 	//Define values (to be used in charts)
 	var minDate = dateDim.bottom(1)[0]["icu_ds_dtm"];
 	var maxDate = dateDim.top(1)[0]["icu_ds_dtm"];
@@ -108,19 +105,45 @@ function makeGraphs(error, projectsJson) {
 	var resourceTypeChart = dc.rowChart("#hospital-type-row-chart");
 	var icuSrcChart = dc.rowChart("#icu-src-type-row-chart");
 	var icuOutChart = dc.rowChart("#icu-out-level-row-chart");
-	// var numberProjectsND = dc.numberDisplay("#number-projects-nd");
+	var avghrsChart = dc.numberDisplay("#icu-hrs-projects-nd");
+	var genderRingChart = dc.pieChart("#gender-chart");
+	var surviveRingChart = dc.pieChart('#survive-chart');
+
+	var numGenderPie = ndx.groupAll().reduceSum(function(d) {return d["sex"];});
+	var numSurvivPie = ndx.groupAll().reduceSum(function(d) {return d["died_icu"];});
 	// var totalDonationsND = dc.numberDisplay("#total-donations-nd");
 
 	// numberProjectsND
 	// 	.formatNumber(d3.format("d"))
 	// 	.valueAccessor(function(d){return d; })
 	// 	.group(all);
+	// 	
+	// 	 
 
-	// totalDonationsND
-	// 	.formatNumber(d3.format("d"))
-	// 	.valueAccessor(function(d){return d; })
-	// 	.group(totalDonations)
-	// 	.formatNumber(d3.format(".3s"));
+    genderRingChart
+		.height(250)
+		.width(200)
+		.radius(90)
+		.innerRadius(40)
+		.transitionDuration(1000)
+		.dimension(numGenderPie)
+		.group(numProjectsBySex);
+
+
+	surviveRingChart
+		.height(250)
+		.width(200)
+		.radius(90)
+		.innerRadius(40)
+		.transitionDuration(1000)
+		.dimension(numSurvivPie)
+		.group(numProjectsByDie);
+
+	avghrsChart
+		.formatNumber(d3.format("d"))
+		.valueAccessor( function(d) {return d.n ? d.tot / d.n : 0;})
+		.group(numProjectsByAge)
+		.formatNumber(d3.format(".5s"));
 
 	timeChart
 		.width(600)
