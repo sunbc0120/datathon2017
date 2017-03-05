@@ -53,8 +53,6 @@ function makeGraphs(error, projectsJson) {
 	//Define Dimensions
 	var dateDim = ndx.dimension(function(d) { return d["icu_ds_dtm"]; });
 
-	console.log(dateDim)
-
 	var hospitalClassDim = ndx.dimension(function(d) { return d["hospitalclassification"]; });
 	var hopsrcDim = ndx.dimension(function(d) { return d["hosp_srce"]; });
 	var hopotcDim = ndx.dimension(function(d) { return d["hosp_outcm"]; });
@@ -67,7 +65,6 @@ function makeGraphs(error, projectsJson) {
 	var icuotcDim = ndx.dimension(function(d) { return d["icu_outcm"]; });
 
 	var diedDim = ndx.dimension(function(d) { return d["died_icu"]; });
-
 
 	//Calculate metrics
 	var numProjectsByDate = dateDim.group(); 
@@ -84,42 +81,83 @@ function makeGraphs(error, projectsJson) {
 
 	var numProjectsByDie = diedDim.group();
 
-	var totalhorsICU = ndx.groupAll().reduceSum(function(d) {
-		return d["icu_hrs"];
-	});
-
 	var all = ndx.groupAll();
-	// var totalDonations = ndx.groupAll().reduceSum(function(d) {return d["total_donations"];});
 
-	// var max_hr = totalhorsICU.top(1)[0].value;
-	var maxhr = numProjectsByAge.top(1)[0]
 	//Define values (to be used in charts)
 	var minDate = dateDim.bottom(1)[0]["icu_ds_dtm"];
 	var maxDate = dateDim.top(1)[0]["icu_ds_dtm"];
-
-	console.log(minDate);
-	console.log(maxDate);
 
     //Charts
 	var timeChart = dc.barChart("#time-chart");
 	var resourceTypeChart = dc.rowChart("#hospital-type-row-chart");
 	var icuSrcChart = dc.rowChart("#icu-src-type-row-chart");
 	var icuOutChart = dc.rowChart("#icu-out-level-row-chart");
-	var avghrsChart = dc.numberDisplay("#icu-hrs-projects-nd");
+
+	var avghrsND = dc.numberDisplay("#icu-hrs-projects-nd");
+	var avgageND = dc.numberDisplay("#age-avg-projects-nd");
+
+	// var maxageND = dc.numberDisplay("#age-max-projects-nd");
+
 	var genderRingChart = dc.pieChart("#gender-chart");
 	var surviveRingChart = dc.pieChart('#survive-chart');
 
 	var numGenderPie = ndx.groupAll().reduceSum(function(d) {return d["sex"];});
 	var numSurvivPie = ndx.groupAll().reduceSum(function(d) {return d["died_icu"];});
-	// var totalDonationsND = dc.numberDisplay("#total-donations-nd");
 
-	// numberProjectsND
-	// 	.formatNumber(d3.format("d"))
-	// 	.valueAccessor(function(d){return d; })
-	// 	.group(all);
-	// 	
-	// 	 
+	// var totalhorsICU = ndx.groupAll().reduceSum(function(d) {return d["icu_hrs"];});
+	var maxage = ndx.groupAll().reduceSum(function(d) {return d.top(1)[0]["age"];});
 
+	var average = function(d) {return d.n ? d.tot/d.n : 0;};
+	var meanHrGroup = ndx.groupAll().reduce(
+          function (p, v) {
+              ++p.n;
+              p.tot += v["icu_hrs"];
+              return p;
+          },
+          function (p, v) {
+              --p.n;
+              p.tot -= v["icu_hrs"];
+              return p;
+          },
+          function () { return {n:0,tot:0}; }
+      );
+
+
+	var meanAgeGroup = ndx.groupAll().reduce(
+          function (p, v) {
+              ++p.n;
+              p.tot += v["age"];
+              return p;
+          },
+          function (p, v) {
+              --p.n;
+              p.tot -= v["age"];
+              return p;
+          },
+          function () { return {n:0,tot:0}; }
+      );
+
+  	var expCount = function(d) {
+    	  return d.n;
+  	};
+
+
+  	// maxageND
+  	//   	.group(maxage)
+  	// 	.valueAccessor(function(d){return d;})
+  	// 	.formatNumber(d3.format(".3g"));
+
+  	avghrsND
+  		.group(meanHrGroup)
+  		.valueAccessor(average)
+  		.formatNumber(d3.format(".3g"));
+
+
+  	avgageND
+  		.group(meanAgeGroup)
+  		.valueAccessor(average)
+  		.formatNumber(d3.format(".3g"));
+		
     genderRingChart
 		.height(250)
 		.width(200)
@@ -138,12 +176,6 @@ function makeGraphs(error, projectsJson) {
 		.transitionDuration(1000)
 		.dimension(numSurvivPie)
 		.group(numProjectsByDie);
-
-	avghrsChart
-		.formatNumber(d3.format("d"))
-		.valueAccessor( function(d) {return d.n ? d.tot / d.n : 0;})
-		.group(numProjectsByAge)
-		.formatNumber(d3.format(".5s"));
 
 	timeChart
 		.width(600)
@@ -178,25 +210,6 @@ function makeGraphs(error, projectsJson) {
         .dimension(icuotcDim)
         .group(numProjectsByIcuOut)
         .xAxis().ticks(6);
-
-
-	// usChart.width(1000)
-	// 	.height(330)
-	// 	.dimension(stateDim)
-	// 	.group(totalDonationsByState)
-	// 	.colors(["#E2F2FF", "#C4E4FF", "#9ED2FF", "#81C5FF", "#6BBAFF", "#51AEFF", "#36A2FF", "#1E96FF", "#0089FF", "#0061B5"])
-	// 	.colorDomain([0, max_state])
-	// 	.overlayGeoJson(statesJson["features"], "state", function (d) {
-	// 		return d.properties.name;
-	// 	})
-	// 	.projection(d3.geo.albersUsa()
- //    				.scale(600)
- //    				.translate([340, 150]))
-	// 	.title(function (p) {
-	// 		return "State: " + p["key"]
-	// 				+ "\n"
-	// 				+ "Total Donations: " + Math.round(p["value"]) + " $";
-	// 	})
 
     dc.renderAll();
 

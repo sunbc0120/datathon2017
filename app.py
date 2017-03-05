@@ -14,7 +14,6 @@ dbs_name        = 'datathon'
 collection_name = 'apd'
 
 fields = {
-
     # "hospitalclassificationid": True,
     # "icu_ad_dtm": True,
     "icu_ds_dtm": True,
@@ -46,7 +45,6 @@ def donorschoose_projects():
             'age': {'$gte': 80},
             "icu_ds_dtm":{"$exists": True, "$ne": ""} },
             fields,
-            # fields,
             limit = 3000
         )
     # 
