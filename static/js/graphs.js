@@ -31,7 +31,7 @@ function makeGraphs(error, projectsJson) {
 
 	console.log(dateDim)
 
-	var hospitalClassDim = ndx.dimension(function(d) { return d["hospitalclassificationid"]; });
+	var hospitalClassDim = ndx.dimension(function(d) { return d["hospitalclassification"]; });
 	var hopsrcDim = ndx.dimension(function(d) { return d["hosp_srce"]; });
 	var hopotcDim = ndx.dimension(function(d) { return d["hosp_outcm"]; });
 
@@ -78,9 +78,9 @@ function makeGraphs(error, projectsJson) {
 
     //Charts
 	var timeChart = dc.barChart("#time-chart");
-	// var resourceTypeChart = dc.rowChart("#resource-type-row-chart");
-	// var povertyLevelChart = dc.rowChart("#poverty-level-row-chart");
-	// var usChart = dc.geoChoroplethChart("#us-chart");
+	var resourceTypeChart = dc.rowChart("#hospital-type-row-chart");
+	var icuSrcChart = dc.rowChart("#icu-src-type-row-chart");
+	var icuOutChart = dc.rowChart("#icu-out-level-row-chart");
 	// var numberProjectsND = dc.numberDisplay("#number-projects-nd");
 	// var totalDonationsND = dc.numberDisplay("#total-donations-nd");
 
@@ -97,7 +97,7 @@ function makeGraphs(error, projectsJson) {
 
 	timeChart
 		.width(600)
-		.height(160)
+		.height(250)
 		.margins({top: 10, right: 50, bottom: 30, left: 50})
 		.dimension(dateDim)
 		.group(numProjectsByDate)
@@ -107,19 +107,27 @@ function makeGraphs(error, projectsJson) {
 		.xAxisLabel("Year")
 		.yAxis().ticks(4);
 
-	// resourceTypeChart
- //        .width(300)
- //        .height(250)
- //        .dimension(resourceTypeDim)
- //        .group(numProjectsByResourceType)
- //        .xAxis().ticks(4);
+	resourceTypeChart
+        .width(600)
+        .height(250)
+        .dimension(hospitalClassDim)
+        .group(numProjectsByHopClass)
+        .xAxis().ticks(4);
 
-	// povertyLevelChart
-	// 	.width(300)
-	// 	.height(250)
- //        .dimension(povertyLevelDim)
- //        .group(numProjectsByPovertyLevel)
- //        .xAxis().ticks(4);
+	icuSrcChart
+		.width(300)
+		.height(250)
+        .dimension(icusrcDim)
+        .group(numProjectsByIcuSrc)
+        .xAxis().ticks(6);
+
+
+	icuOutChart
+		.width(300)
+		.height(250)
+        .dimension(icuotcDim)
+        .group(numProjectsByIcuOut)
+        .xAxis().ticks(6);
 
 
 	// usChart.width(1000)

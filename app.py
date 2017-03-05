@@ -20,7 +20,7 @@ fields = {
     "icu_ds_dtm": True,
     "age": True,
     "sex": True,
-    "hospitalclassificationid": True,
+    "hospitalclassification": True,
 
     "icu_hrs": True,    
     "icu_srce": True,
@@ -32,8 +32,6 @@ fields = {
     "died_icu": True,
     "_id": False
 }
-
-
 
 @app.route("/")
 def index():
