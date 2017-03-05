@@ -17,6 +17,33 @@ function makeGraphs(error, projectsJson) {
 		// console.log('parse date: ', d["hosp_ad_dtm"]);
 		d["icu_ds_dtm"].setDate(1);
 		// d["total_icu"] = +d["total_icu"];
+		
+		if (d["icu_srce"] == 1) {
+			d["icu_srce"] = "OT/Recovery";
+		} else if  (d["icu_srce"] == 2) {
+			d["icu_srce"] = "Accident & Emergency"
+		} else if (d["icu_srce"] == 3) {
+			d["icu_srce"] = "Ward"
+		} else if (d["icu_srce"] == 4) {
+			d["icu_srce"] = "Other ICU, same hosptial"
+		} else if (d["icu_srce"] == 5) {
+			d["icu_srce"] = "Other hosptial"
+		} else {
+			d["icu_srce"] = "Other hosptial ICU 9 Direct ICU admssion"
+		};
+
+
+		if (d["icu_outcm"] == 2) {
+			d["icu_outcm"] = "Died in ICU";
+		} else if  (d["icu_outcm"] == 3) {
+			d["icu_outcm"] = "Survived ICU"
+		} else if (d["icu_outcm"] == 5) {
+			d["icu_outcm"] = "Transferred to another ICU"
+		} else if (d["icu_outcm"] == 6) {
+			d["icu_outcm"] = "Transferred to another hospital"
+		} else {
+			d["icu_outcm"] = "Other"
+		};
 
 		// console.log('check this out of date: ', d["total_icu"]);
 	});
