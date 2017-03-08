@@ -32,6 +32,7 @@ fields = {
     "_id": False
 }
 
+
 @app.route("/")
 def index():
     return render_template("index.html")
@@ -44,8 +45,10 @@ def donorschoose_projects():
             {'icuadmityyyy': {'$gte' :2006, '$lte' : 2016 },
             'age': {'$gte': 80},
             "icu_ds_dtm":{"$exists": True, "$ne": ""} },
-            fields,
-            limit = 3000
+          
+	  #fields
+	  fields,
+          limit = 3000
         )
     # 
     json_projects = []

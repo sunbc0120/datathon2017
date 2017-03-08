@@ -26,7 +26,6 @@ function makeGraphs(error, projectsJson) {
 			d["icu_srce"] = "Other hosptial ICU 9 Direct ICU admssion"
 		};
 
-
 		if (d["icu_outcm"] == 2) {
 			d["icu_outcm"] = "Died in ICU";
 		} else if  (d["icu_outcm"] == 3) {
@@ -52,18 +51,14 @@ function makeGraphs(error, projectsJson) {
 
 	//Define Dimensions
 	var dateDim = ndx.dimension(function(d) { return d["icu_ds_dtm"]; });
-
 	var hospitalClassDim = ndx.dimension(function(d) { return d["hospitalclassification"]; });
 	var hopsrcDim = ndx.dimension(function(d) { return d["hosp_srce"]; });
 	var hopotcDim = ndx.dimension(function(d) { return d["hosp_outcm"]; });
-
 	var ageDim = ndx.dimension(function(d) { return d["age"]; });
 	var sexDim = ndx.dimension(function(d) { return d["sex"]; });
-	
 	var icuhrsDim = ndx.dimension(function(d) { return d["icu_hrs"]; });
 	var icusrcDim = ndx.dimension(function(d) { return d["icu_srce"]; });
 	var icuotcDim = ndx.dimension(function(d) { return d["icu_outcm"]; });
-
 	var diedDim = ndx.dimension(function(d) { return d["died_icu"]; });
 
 	//Calculate metrics
@@ -71,17 +66,13 @@ function makeGraphs(error, projectsJson) {
 	var numProjectsByHopClass = hospitalClassDim.group();
 	var numProjectsByHopSrc = hopsrcDim.group();
 	var numProjectsByHopOut = hopotcDim.group(); 
-
 	var numProjectsByAge = ageDim.group();
 	var numProjectsBySex = sexDim.group();
-
 	var numProjectsByIcuHrs = icuhrsDim.group(); 
 	var numProjectsByIcuSrc = icusrcDim.group();
 	var numProjectsByIcuOut = icuotcDim.group();
-
 	var numProjectsByDie = diedDim.group();
-
-	var all = ndx.groupAll();
+	// var all = ndx.groupAll();
 
 	//Define values (to be used in charts)
 	var minDate = dateDim.bottom(1)[0]["icu_ds_dtm"];
@@ -92,21 +83,16 @@ function makeGraphs(error, projectsJson) {
 	var resourceTypeChart = dc.rowChart("#hospital-type-row-chart");
 	var icuSrcChart = dc.rowChart("#icu-src-type-row-chart");
 	var icuOutChart = dc.rowChart("#icu-out-level-row-chart");
-
 	var avghrsND = dc.numberDisplay("#icu-hrs-projects-nd");
 	var avgageND = dc.numberDisplay("#age-avg-projects-nd");
-
 	// var maxageND = dc.numberDisplay("#age-max-projects-nd");
-
 	var genderRingChart = dc.pieChart("#gender-chart");
 	var surviveRingChart = dc.pieChart('#survive-chart');
 
-	var numGenderPie = ndx.groupAll().reduceSum(function(d) {return d["sex"];});
-	var numSurvivPie = ndx.groupAll().reduceSum(function(d) {return d["died_icu"];});
-
+	// var numGenderPie = ndx.groupAll().reduceSum(function(d) {return d["sex"];});
+	// var numSurvivPie = ndx.groupAll().reduceSum(function(d) {return d["died_icu"];});
 	// var totalhorsICU = ndx.groupAll().reduceSum(function(d) {return d["icu_hrs"];});
 	var maxage = ndx.groupAll().reduceSum(function(d) {return d.top(1)[0]["age"];});
-
 	var average = function(d) {return d.n ? d.tot/d.n : 0;};
 	var meanHrGroup = ndx.groupAll().reduce(
           function (p, v) {
@@ -121,8 +107,6 @@ function makeGraphs(error, projectsJson) {
           },
           function () { return {n:0,tot:0}; }
       );
-
-
 	var meanAgeGroup = ndx.groupAll().reduce(
           function (p, v) {
               ++p.n;
@@ -136,7 +120,6 @@ function makeGraphs(error, projectsJson) {
           },
           function () { return {n:0,tot:0}; }
       );
-
   	var expCount = function(d) {
     	  return d.n;
   	};
@@ -164,7 +147,7 @@ function makeGraphs(error, projectsJson) {
 		.radius(90)
 		.innerRadius(40)
 		.transitionDuration(1000)
-		.dimension(numGenderPie)
+		.dimension(sexDim)
 		.group(numProjectsBySex);
 
 
@@ -174,7 +157,7 @@ function makeGraphs(error, projectsJson) {
 		.radius(90)
 		.innerRadius(40)
 		.transitionDuration(1000)
-		.dimension(numSurvivPie)
+		.dimension(diedDim)
 		.group(numProjectsByDie);
 
 	timeChart
