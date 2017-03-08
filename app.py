@@ -32,7 +32,6 @@ fields = {
     "_id": False
 }
 
-
 @app.route("/")
 def index():
     return render_template("index.html")
